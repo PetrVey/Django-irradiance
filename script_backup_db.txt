@@ -1,0 +1,19 @@
+#backup db
+docker exec -t docker_test_db_1 pg_dumpall -c -U postgres > backup.sql
+
+#restore db
+cat  backup.sql | docker exec -i docker_test_db_1 psql -U gps
+type backup.sql | docker exec -i docker_test_db_1 psql -U gps -d postgres
+
+
+
+
+#if the file is too large then must copy to container first and load inside
+#restore db
+docker cp local/path/to/db.dump CONTAINER_ID:/db.dump
+
+# shell into container
+docker exec -it CONTAINER_ID bash
+
+# restore it from within
+pg_restore -U postgres -d DB_NAME --no-owner -1 /db.dump
